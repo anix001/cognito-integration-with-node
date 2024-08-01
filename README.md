@@ -14,9 +14,8 @@ An identity pool is a collection of unique identifiers, or identities, that you 
 1. @aws-sdk/client-cognito-identity-provider
 2. dotenv
 3. express
-4. multer
 
-``` yarn add @aws-sdk/client-s3 @aws-sdk/lib-storage dotenv express multer ```
+``` yarn add @aws-sdk/client-cognito-identity-provider dotenv express ```
 
 ## For Dev Dependencies
 
