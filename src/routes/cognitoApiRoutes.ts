@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import {
   AdminSetUserPasswordCommand,
   AdminUpdateUserAttributesCommand,
+  ChangePasswordCommand,
   CognitoIdentityProviderClient,
   ConfirmForgotPasswordCommand,
   ForgotPasswordCommand,
@@ -203,6 +204,36 @@ router.post("/update-user-attribute-admin", async(req:Request, res:Response)=>{
   }
 });
 
+
+router.post("/change-password", async(req:Request, res:Response)=>{
+  const accessToken = req.headers['authorization']?.split(' ')[1];
+  const {previousPassword, newPassword} = req.body;
+
+  try{
+    const client = new CognitoIdentityProviderClient(
+      {
+        region: process.env.COGNITO_REGION as string,
+        credentials:{
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string
+        },
+      }
+    );
+
+    const command = new ChangePasswordCommand({
+      AccessToken: accessToken,
+      PreviousPassword: previousPassword,
+      ProposedPassword: newPassword
+    })
+
+    const data = await client.send(command);
+    res.status(200).send({ message: "Successfully changed the password !!", data });
+
+  }catch(error){
+    let errorType = (error as any).__type || "UnknownError";
+    res.status(500).send({ Error: errorType });
+  }
+});
 
 
 export default router;
