@@ -9,6 +9,7 @@ import {
   InitiateAuthCommand,
   UpdateUserAttributesCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
+//import generateHmacBase64 from "../common/generateHmacBase64";
 
 const router = express.Router();
 
@@ -116,6 +117,8 @@ router.get('/get-access-token', async(req:Request, res:Response)=>{
         },
       }
     );
+    
+    //const secretHash = await generateHmacBase64(process.env.COGNITO_CLIENT_SECRET as string, username, process.env.COGNITO_CLIENT_ID as string); 
 
     const command = new InitiateAuthCommand({
        ClientId: process.env.COGNITO_CLIENT_ID,
@@ -123,6 +126,7 @@ router.get('/get-access-token', async(req:Request, res:Response)=>{
        AuthParameters: {
            USERNAME: username, // The user's username
            PASSWORD: password, // The user's password
+          //  SECRET_HASH:secretHash //We also need to send this if we have check the Generate client secret.
          },
     });
 
